@@ -1,6 +1,6 @@
 # DDDQN-Bird
 
-Flappy Bird with a Double Doueling Deep Q-Network
+Flappy Bird with a Double Dueling Deep Q-Network
 
 Game adapted from: https://github.com/sourabhv/FlapPyBird
 
