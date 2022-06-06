@@ -147,7 +147,6 @@ class DDQN:
         self.epsilon_reducing_factor = (
             (initial_epsilon - final_epsilon) / episodes
         )
-        self.n_actions = n_actions
 
     def update_value_network(self):
         self.value_network.load_state_dict(
@@ -196,7 +195,6 @@ class DDQN:
                 BlackWhite(),
             ]
         )
-
         return image_pipe(image).permute(0, 2, 1)
 
     def train_step(self):
