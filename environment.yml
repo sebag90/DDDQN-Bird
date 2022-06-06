@@ -1,0 +1,21 @@
+name: rl
+channels:
+  - defaults
+dependencies:
+  - python
+  - jupyter
+  - notebook
+  - pandas
+  - matplotlib
+  - swig
+  - torchaudio
+  - pytorch
+  - cudatoolkit=10.2
+  - torchvision
+  - urllib3
+  - pip:
+    - pygame
+  
+variables:
+  MESA_LOADER_DRIVER_OVERRIDE: i965
+
