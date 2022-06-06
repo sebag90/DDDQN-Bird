@@ -60,7 +60,7 @@ def main(args):
         state = state.unsqueeze(0).repeat_interleave(4, 1).to(DEVICE)
 
         while terminal is False:
-            # select action and get current Q value
+            # select action based on epsilon greedy policy
             action = q.epsilon_greedy(state, actions)
 
             # take step
@@ -72,12 +72,13 @@ def main(args):
             next_state = torch.cat(
                 (state.squeeze(0)[1:, :, :], next_state)
             ).unsqueeze(0)
-            # add element to buffer replay
+
+            # add element to replay buffer
             q.buffer.add(
                 state, action, reward, next_state, terminal
             )
 
-            # update Q value
+            # perform one training step
             q.train_step()
 
             steps += 1
