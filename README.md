@@ -4,7 +4,7 @@ Flappy Bird with a Double Dueling Deep Q-Network
 
 Game adapted from: https://github.com/sourabhv/FlapPyBird
 
-## Install
+## Quickstart
 
 All requirements are saved in environment.yml  
 
@@ -20,9 +20,9 @@ conda env create -f environment.yml
 conda activate easymt
 ```
 
-## USAGE
+## Synopsis
 
-### Play yourself
+### Play normal flappy bird
 ```
 python dddqn-flappy.py play
 ```
