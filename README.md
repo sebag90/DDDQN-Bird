@@ -17,7 +17,7 @@ conda env create -f environment.yml
 
 * activate the new environment
 ```
-conda activate easymt
+conda activate rl
 ```
 
 ## Synopsis
