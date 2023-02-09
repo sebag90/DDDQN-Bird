@@ -6,7 +6,8 @@ import time
 import torch
 
 from environment.RLflappy import RLBird
-from utils.model import DDQN
+from model.model import DDQN
+from model.utils import Buffer, ImagePipe
 
 
 DEVICE = torch.device(
@@ -24,16 +25,20 @@ def main(args):
     fps = 99999 if args.headless is True else args.fps
 
     env = RLBird(w, h, fps=fps, pipegapsize=100)
+    buffer = Buffer(
+        buffer_size=args.buffer_size,
+        batch_size=args.batch_size,
+        n_actions=len(env.action_space)
+    )
     q = DDQN(
         lr=args.lr,
-        n_actions=len(env.action_space),
-        buffer_size=args.buffer_size,
         gamma=args.gamma,
         initial_epsilon=args.init_epsilon,
         final_epsilon=args.final_epsilon,
         uniform_init=args.init,
         episodes=args.episodes
     )
+    image_pipe = ImagePipe()
 
     if args.resume is not None:
         q.load(Path(args.resume))
@@ -56,7 +61,7 @@ def main(args):
         # reset environment
         env.reset(verbose=True)
         state = env.get_state()
-        state = q.prepare_image(state)
+        state = image_pipe(state)
         state = state.unsqueeze(0).repeat_interleave(4, 1).to(DEVICE)
 
         while terminal is False:
@@ -68,18 +73,19 @@ def main(args):
             next_state = env.get_state()
 
             # prepare current state and concatenate it to old one
-            next_state = q.prepare_image(next_state).to(DEVICE)
+            next_state = image_pipe(next_state).to(DEVICE)
             next_state = torch.cat(
                 (state.squeeze(0)[1:, :, :], next_state)
             ).unsqueeze(0)
 
             # add element to replay buffer
-            q.buffer.add(
+            buffer.add(
                 state, action, reward, next_state, terminal
             )
 
             # perform one training step
-            q.train_step()
+            batch = buffer.get_minibatch()
+            q.train_step(*batch)
 
             steps += 1
             this_reward += reward

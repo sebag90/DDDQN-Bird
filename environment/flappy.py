@@ -6,7 +6,7 @@ from pygame.locals import *
 
 
 class FlappyBird:
-    def __init__(self, screenwidth, screenheight, fps=30, pipegapsize=100):
+    def __init__(self, screenwidth, screenheight, fps=30, pipegapsize=150):
         self.screenwidth = screenwidth
         self.screenheight = screenheight
         self.fps = fps
@@ -549,5 +549,5 @@ class FlappyBird:
 
 
 if __name__ == "__main__":
-    game = FlappyBird(288, 512, pipegapsize=100)
+    game = FlappyBird(288, 512, pipegapsize=150)
     game.main()

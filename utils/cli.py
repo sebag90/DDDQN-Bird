@@ -96,6 +96,10 @@ def get_arguments():
         "--buffer-size", action="store", type=int, default=10000,
         help="Size of the replay buffer"
     )
+    train.add_argument(
+        "--batch-size", action="store", type=int, default=64,
+        help="Batch size for learning"
+    )
     train.add_argument("--headless", action="store_true")
 
     # EVALUATE
