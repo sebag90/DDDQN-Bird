@@ -2,6 +2,7 @@ from dataclasses import dataclass
 import random
 
 import torch
+import torch.nn as nn
 import torchvision.transforms as transforms
 
 
@@ -17,6 +18,15 @@ class MemoryItem:
     reward: float
     new_state: torch.tensor
     terminal: bool
+
+    def values(self):
+        return (
+            self.old_state,
+            self.action,
+            self.reward,
+            self.new_state,
+            self.terminal
+        )
 
 
 class Buffer(list):
@@ -34,33 +44,19 @@ class Buffer(list):
             self.pop(0)
 
     def get_minibatch(self):
-        minibatch = random.sample(
-            self, min(len(self), self.batch_size)
+        minibatch = random.sample(self, min(len(self), self.batch_size))
+        old_states, actions, rewards, new_states, terminals = zip(
+            *(i.values() for i in minibatch)
         )
 
-        old_states = (
-            torch.cat(tuple(i.old_state for i in minibatch))
-            .to(DEVICE)
-        )
-        new_states = (
-            torch.cat(tuple(i.new_state for i in minibatch))
-            .to(DEVICE)
-        )
-        terminals = (
-            torch.tensor([i.terminal for i in minibatch])
-            .long()
-            .to(DEVICE)
-        )
-        rewards = (
-            torch.tensor([i.reward for i in minibatch])
-            .to(DEVICE)
-        )
-        actions = (
-            torch.nn.functional.one_hot(
-                torch.tensor([i.action for i in minibatch]),
-                num_classes=self.n_actions)
-            .to(DEVICE)
-        )
+        old_states = torch.cat(old_states).to(DEVICE)
+        new_states = torch.cat(new_states).to(DEVICE)
+        terminals = torch.tensor(terminals).long().to(DEVICE)
+        rewards = torch.tensor(rewards).to(DEVICE)
+        actions = nn.functional.one_hot(
+            torch.tensor(actions), num_classes=self.n_actions
+        ).to(DEVICE)
+
         return old_states, actions, rewards, new_states, terminals
 
 
