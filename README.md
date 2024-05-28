@@ -18,6 +18,9 @@ conda env create -f environment.yml
 * activate the new environment
 ```
 conda activate rl
+
+# on fedora
+export LD_PRELOAD=/usr/lib64/libstdc++.so.6
 ```
 
 ## Synopsis

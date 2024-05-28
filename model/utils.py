@@ -32,7 +32,7 @@ class MemoryItem:
 
 class Buffer(deque):
     def __init__(self, buffer_size, batch_size, n_actions):
-        super().__init__(maxlen=self.buffer_size)
+        super().__init__(maxlen=buffer_size)
         self.batch_size = batch_size
         self.n_actions = n_actions
 
