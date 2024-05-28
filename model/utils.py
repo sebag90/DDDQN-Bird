@@ -1,3 +1,4 @@
+from collections import deque
 from dataclasses import dataclass
 import random
 
@@ -29,9 +30,9 @@ class MemoryItem:
         )
 
 
-class Buffer(list):
+class Buffer(deque):
     def __init__(self, buffer_size, batch_size, n_actions):
-        self.buffer_size = buffer_size
+        super().__init__(maxlen=self.buffer_size)
         self.batch_size = batch_size
         self.n_actions = n_actions
 
@@ -39,9 +40,6 @@ class Buffer(list):
         self.append(
             MemoryItem(state, action, reward, next_state, terminal)
         )
-
-        if len(self) > self.buffer_size:
-            self.pop(0)
 
     def get_minibatch(self):
         minibatch = random.sample(self, min(len(self), self.batch_size))
